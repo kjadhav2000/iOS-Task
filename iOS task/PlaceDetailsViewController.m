@@ -247,7 +247,7 @@
         }
         else
         {
-            UIAlertView *al = [[UIAlertView alloc]initWithTitle:@"Successful" message:@"Place added to favourites" delegate:nil cancelButtonTitle:@"Cancle" otherButtonTitles:nil];
+            UIAlertView *al = [[UIAlertView alloc]initWithTitle:@"Successful" message:@"Place added to favourites" delegate:nil cancelButtonTitle:@"Okay" otherButtonTitles:nil];
             [al show];
             
             [MBProgressHUD hideHUDForView:self.view animated:YES];
