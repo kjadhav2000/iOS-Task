@@ -227,7 +227,6 @@
     else if ([segue.identifier isEqualToString:@"favourite_segue"])
     {
         favouriteViewController *oobj = segue.destinationViewController;
-        oobj.lastLocation=lastLocation;
         oobj.pname=pname;
         oobj.paddress=paddress;
         oobj.prating=prating;
