@@ -140,98 +140,66 @@
         NSData* data = [NSData dataWithContentsOfURL:[NSURL URLWithString:JSONURL] ];
         
         
-        if (data) {
             [self performSelectorOnMainThread:@selector(fetchedData:) withObject:data waitUntilDone:YES];
-        }
-        else
-        {
-            // NSLog(@" error data is nil");
-            [self performSelectorInBackground:@selector(Alert) withObject:nil];
-        }
        
     });
 
-}
--(void)Alert
-{
-    
-    UIAlertView *alert= [[UIAlertView alloc]initWithTitle:@"No Internet" message:@"Internet connection problem" delegate:self cancelButtonTitle:@"Okay"otherButtonTitles:nil];
-        [alert show];
-    
 }
 
 - (void)fetchedData:(NSData *)responseData
 {
     [MBProgressHUD hideHUDForView:self.view animated:YES];
     
-    NSError* error;
-    NSDictionary* json = [NSJSONSerialization JSONObjectWithData:responseData
-                                                         options:kNilOptions
-                                                           error:&error];
     
-    NSString *status=[json valueForKey:@"status"];
-    // NSLog(@"%@",[json valueForKey:@"status"]);
-    if ([status isEqual: @"NOT_FOUND" ])
-    {
-        
-        UIAlertView *alert= [[UIAlertView alloc]initWithTitle:@"Location not available" message:status delegate:self cancelButtonTitle:@"Okay" otherButtonTitles: nil];
-        
-        [alert show];    }
-    
-    else if ([status isEqual: @"ZERO_RESULTS"])
-    {
-        UIAlertView *alert= [[UIAlertView alloc]initWithTitle:@"Location not available" message:status delegate:self cancelButtonTitle:@"Okay" otherButtonTitles: nil];
-        
-        [alert show];
-        
+    if (responseData) {
+        NSError* error;
+        NSDictionary* json = [NSJSONSerialization JSONObjectWithData:responseData
+                                                             options:kNilOptions
+                                                               error:&error];
+        NSString *status=[json valueForKey:@"status"];
+        if ([status isEqual: @"NOT_FOUND" ])
+        {
+            UIAlertView *alert= [[UIAlertView alloc]initWithTitle:@"Location not available" message:status delegate:self cancelButtonTitle:@"Okay" otherButtonTitles: nil];
+            [alert show];
+        }
+        else if ([status isEqual: @"ZERO_RESULTS"])
+        {
+            UIAlertView *alert= [[UIAlertView alloc]initWithTitle:@"Location not available" message:status delegate:self cancelButtonTitle:@"Okay" otherButtonTitles: nil];
+            [alert show];
+        }
+        else
+        {
+            PlacesArray = [json valueForKey:@"results"];
+            [self performSelectorOnMainThread:@selector(PushPlacesViewController) withObject:nil waitUntilDone:YES];
+        }
     }
     else
     {
-        PlacesArray = [json valueForKey:@"results"];
-        [self performSelectorOnMainThread:@selector(PushPlacesViewController) withObject:nil waitUntilDone:YES];
-
-        
-    }
-    
+        UIAlertView *alert= [[UIAlertView alloc]initWithTitle:@"No Internet" message:@"Internet connection problem" delegate:self cancelButtonTitle:@"Okay"otherButtonTitles:nil];
+        [alert show];    }
 }
 
 -(IBAction)switchToCategoryFromButton:(id)sender{
     
     switch ([sender tag]) {
         case 1:
-            
             [self fetchPlacesFromAPI:@"gym"];
-            
-            //[self performSelectorOnMainThread:@selector(PushPlacesViewController) withObject:nil waitUntilDone:YES];
             break;
         case 2:
-            
             [self fetchPlacesFromAPI:@"hospital"];
-            
             break;
         case 3:
-            
             [self fetchPlacesFromAPI:@"food"];
-            
             break;
         case 4:
-            
             [self fetchPlacesFromAPI:@"spa"];
-            
             break;
         case 5:
-            
             [self fetchPlacesFromAPI:@"school"];
-            
             break;
-            
         case 6:
-            
             [self fetchPlacesFromAPI:@"restaurant"];
-
             break;
-            
-            
         default: ;
     }
     
@@ -259,17 +227,13 @@
     else if ([segue.identifier isEqualToString:@"favourite_segue"])
     {
         favouriteViewController *oobj = segue.destinationViewController;
-        
-        //        oobj.locationArray=locationArray;
-        //        oobj.lastLocation=lastLocation;
+        oobj.lastLocation=lastLocation;
         oobj.pname=pname;
         oobj.paddress=paddress;
         oobj.prating=prating;
         oobj.imageId=imageId;
         oobj.latArr=latArr;
         oobj.lngArr=lngArr;
-
-        
     }
     
 }
